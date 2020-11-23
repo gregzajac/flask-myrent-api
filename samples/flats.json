@@ -1,0 +1,38 @@
+[
+    {
+        "identifier": "Mostnika 5",
+        "address": "Mostnika 5/12 01-100 Słupsk",
+        "description": "Mieszkanie dwupokojowe z aneksem kuchennym na trzecim piętrze.",
+        "landlord_id": 1
+    },
+    {
+        "identifier": "Andersena 2",
+        "address": "Mostnika 2/22 01-105 Warszawa",
+        "description": "Mieszkanie dwupokojowe z oddzielną widną kuchnią, 45m^2. Budynek z wielkiej z 1977 roku.",
+        "landlord_id": 2
+    },
+    {
+        "identifier": "Tołstoja 3",
+        "address": "Mostnika 3/33 01-106 Warszawa",
+        "description": "Mieszkanie dwupokojowe z aneksem kuchennym 50m^2. Mieszkanie usytuowane jest w bloku z wielkiej płyty na 9-tym piętrze (budynek 10-piętrowy), blisko metra i linii tramwajowej. W pobliżu znajduje się przedszkole, szkoła i duży bazar.",
+        "landlord_id": 2
+    },
+    {
+        "identifier": "Chopina 5",
+        "address": "Chopina 5/55A 50-555 Wałbrzych",
+        "description": "Mieszkanie trzypokojowe, duży pokój z aneksem kuchennym. Salon 25m^2, sypialnie 10m^2 i 15m^2. Mieszkanie usytuowane jest w kamienicy na pierwszym piętrze.",
+        "landlord_id": 3
+    },
+    {
+        "identifier": "Piłsudskiego 1",
+        "address": "Piłsudskiego 1/111 50-111 Wałbrzych",
+        "description": "Mieszkanie trzypokojowe z oddzielna widną kuchnią 70m^2, usytuowane na drugim piętrze w odrestaurowanej trzypiętrowej kamienicy.",
+        "landlord_id": 3
+    },
+    {
+        "identifier": "Bartnika 3",
+        "address": "Mostnika 3/33 50-333 Wałbrzych",
+        "description": "Mieszkanie dwupokojowe z aneksem kuchennym 50m^2, usytuowane w osiedlu zamkniętym strzeżonym (bloki 3-piętrowe). Mieszkanie położone jest w malowniczej zielonej dolinie nowoczesnych domów jedno i wielorodzinnych. W pobliżu znajduje się szkoła, przedszkole i duże centrum handlowe. Dojazd do centrum miasta zapewnia pobliska stacja kolejowa i przystanki tramwajowe i autobusowe (3 linie tramwajowe i 4 linie autobusowe kursujące co 15min).",
+        "landlord_id": 3
+    }
+]

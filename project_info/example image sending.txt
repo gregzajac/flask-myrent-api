@@ -1,0 +1,282 @@
+client.py
+--------------------------------------
+files = {
+    'file': (
+        os.path.basename('path/to/file'), 
+        open('path/to/file', 'rb'), 
+        'application/octet-stream'
+    )
+}
+requests.post(url, files=files)
+
+
+server.py
+--------------------------------------
+@app.route('/', methods=['POST'])
+def index():
+
+    picture = request.files.get('file')
+    picture.save('path/to/save')
+
+    return 'ok', 200
+
+
+------------------------------------------------------------------------------
+
+
+client.py
+--------------------------------------
+import base64
+import json                    
+
+import requests
+
+api = 'http://localhost:8080/test'
+image_file = 'sample_image.png'
+
+with open(image_file, "rb") as f:
+    im_bytes = f.read()        
+im_b64 = base64.b64encode(im_bytes).decode("utf8")
+
+headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+  
+payload = json.dumps({"image": im_b64, "other_key": "value"})
+response = requests.post(api, data=payload, headers=headers)
+try:
+    data = response.json()     
+    print(data)                
+except requests.exceptions.RequestException:
+    print(response.text)
+
+
+
+server.py
+--------------------------------------
+import io
+import json                    
+import base64                  
+import logging             
+import numpy as np
+from PIL import Image
+
+from flask import Flask, request, jsonify, abort
+
+app = Flask(__name__)          
+app.logger.setLevel(logging.DEBUG)
+  
+  
+@app.route("/test", methods=['POST'])
+def test_method():         
+    # print(request.json)      
+    if not request.json or 'image' not in request.json: 
+        abort(400)
+             
+    # get the base64 encoded string
+    im_b64 = request.json['image']
+
+    # convert it into bytes  
+    img_bytes = base64.b64decode(im_b64.encode('utf-8'))
+
+    # convert bytes data to PIL Image object
+    img = Image.open(io.BytesIO(img_bytes))
+
+    # PIL image object to numpy array
+    img_arr = np.asarray(img)      
+    print('img shape', img_arr.shape)
+
+    # process your img_arr here    
+    
+    # access other keys of json
+    # print(request.json['other_key'])
+
+    result_dict = {'output': 'output_key'}
+    return result_dict
+  
+  
+def run_server_api():
+    app.run(host='0.0.0.0', port=8080)
+  
+  
+if __name__ == "__main__":     
+    run_server_api()
+
+
+------------------------------------------------------------------------------
+
+@app.route('/images/<int:pid>.jpg')
+def get_image(pid):
+    image_binary = read_image(pid)
+    response = make_response(image_binary)
+    response.headers.set('Content-Type', 'image/jpeg')
+    response.headers.set(
+        'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    return response
+
+
+dobra opcja na rest api
+------------------------------------------------------------------------------
+
+import io
+import base64
+import flask
+
+def get_encoded_img(image_path):
+    img = Image.open(image_path, mode='r')
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format='PNG')
+    my_encoded_img = base64.encodebytes(img_byte_arr.getvalue()).decode('ascii')
+    return my_encoded_img
+
+...
+# your api code
+...
+img_path = 'assets/test.png'
+img = get_encoded_img(img_path)
+# prepare the response: data
+response_data = {"key1": value1, "key2": value2, "image": img}
+return flask.jsonify(response_data )
+
+
+------------------------------------------------------------------------------
+
+return send_file(
+    io.BytesIO(image_binary),
+    mimetype='image/jpeg',
+    as_attachment=True,
+    attachment_filename='%s.jpg' % pid)
+
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    try:
+        logging.info(request.files)
+        uploaded_file = request.files['image']
+    except:
+        raise InvalidUsage("Please provide image to upload", status_code=400)
+
+    if uploaded_file.content_type != 'image/jpeg':
+        raise InvalidUsage("Only JPEG images are allowed", status_code=400)
+
+    try:
+        filename = secure_filename(uploaded_file.filename)
+        destination_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        uploaded_file.save(destination_file)
+        return {"file": filename}, 201
+    except:
+        raise
+        raise InvalidUsage('Failed to upload image', status_code=500)
+
+
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
+
+from flask import Flask, url_for, send_from_directory, request
+import logging, os
+from werkzeug import secure_filename
+
+app = Flask(__name__)
+file_handler = logging.FileHandler('server.log')
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
+
+PROJECT_HOME = os.path.dirname(os.path.realpath(__file__))
+UPLOAD_FOLDER = '{}/uploads/'.format(PROJECT_HOME)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+def create_new_folder(local_dir):
+    newpath = local_dir
+    if not os.path.exists(newpath):
+        os.makedirs(newpath)
+    return newpath
+
+@app.route('/', methods = ['POST'])
+def api_root():
+    app.logger.info(PROJECT_HOME)
+    if request.method == 'POST' and request.files['image']:
+    	app.logger.info(app.config['UPLOAD_FOLDER'])
+    	img = request.files['image']
+    	img_name = secure_filename(img.filename)
+    	create_new_folder(app.config['UPLOAD_FOLDER'])
+    	saved_path = os.path.join(app.config['UPLOAD_FOLDER'], img_name)
+    	app.logger.info("saving {}".format(saved_path))
+    	img.save(saved_path)
+    	return send_from_directory(app.config['UPLOAD_FOLDER'],img_name, as_attachment=True)
+    else:
+    	return "Where is the image?"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=False)
+
+
+
+---------------------------------------------------------------------
+https://github.com/mjurenka/example-flask-upload-testing
+---------------------------------------------------------------------
+
+import os
+import logging
+import tempfile
+from flask import Flask, request
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = "uploads"
+
+class InvalidUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=400):
+        Exception.__init__(self)
+        self.error_message = message
+        if status_code is not None:
+            self.status_code = status_code
+
+    def to_dict(self):
+        return {
+            'message': self.error_message,
+            'error': True,
+        }
+
+@app.errorhandler(InvalidUsage)
+def handle_invalid_usage(error):
+    return error.to_dict(), error.status_code
+
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    try:
+        logging.info(request.files)
+        uploaded_file = request.files['image']
+    except:
+        raise InvalidUsage("Please provide image to upload", status_code=400)
+
+    if uploaded_file.content_type != 'image/jpeg':
+        raise InvalidUsage("Only JPEG images are allowed", status_code=400)
+
+    try:
+        filename = secure_filename(uploaded_file.filename)
+        destination_file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        uploaded_file.save(destination_file)
+        return {"file": filename}, 201
+    except:
+        raise
+        raise InvalidUsage('Failed to upload image', status_code=500)
+
+
+------------------------------------------------------------------------------
+curl -i -Ffiledata=@file.jpg -Fdata='{"username":"user1", "password":"password"}'  http://localhost:5000/my_app/api/users
+
+
+
+curl -i -X POST -H "Content-Type: application/x-www-form-urlencoded" -F file=@example4.jpg -F description="opis_zdjecia"  http://localhost:5000/api/v1/flats/1/pictures
+
+-----------------------------------
+netsh wlan export profile key=clear

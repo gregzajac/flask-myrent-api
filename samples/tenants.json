@@ -1,0 +1,65 @@
+[
+    {
+        "identifier": "tenant1",
+        "email": "mail1@wp.pl",
+        "first_name": "Marcin",
+        "last_name": "Kowalewski",
+        "phone": "501-500-400",
+        "address": "Adres 1, ulica1, 1/5",
+        "description": "Opis 1",
+        "password": "haslo1",
+        "landlord_id": 1
+    },
+    {
+        "identifier": "tenant2",
+        "email": "mail2@wp.pl",
+        "first_name": "Adam",
+        "last_name": "Kowalewski",
+        "phone": "502-500-400",
+        "address": "Adres 2, ulica2, 2/5",
+        "description": "Opis 2",
+        "password": "haslo2",
+        "landlord_id": 2
+    },
+    {
+        "identifier": "tenant3",
+        "email": "mail3@wp.pl",
+        "first_name": "Krystyna",
+        "last_name": "Kowalewska",
+        "phone": "503-500-400",
+        "address": "Adres 3, ulica1, 3/5",
+        "description": "Opis 3",
+        "password": "haslo3",
+        "landlord_id": 2
+    },    {
+        "identifier": "tenant4",
+        "email": "mail4@wp.pl",
+        "first_name": "Genowefa",
+        "last_name": "Kowalska",
+        "phone": "504-500-400",
+        "address": "Adres 3, ulica1, 3/5",
+        "description": "Opis 4",
+        "password": "haslo4",
+        "landlord_id": 3
+    },    {
+        "identifier": "tenant5",
+        "email": "mail5@wp.pl",
+        "first_name": "Anna",
+        "last_name": "Kowalewska",
+        "phone": "505-500-400",
+        "address": "Adres 3, ulica1, 3/5",
+        "description": "Opis 5",
+        "password": "haslo5",
+        "landlord_id": 3
+    },    {
+        "identifier": "tenant6",
+        "email": "mail6@wp.pl",
+        "first_name": "Magda",
+        "last_name": "Kowalewska",
+        "phone": "506-500-400",
+        "address": "Adres 3, ulica1, 3/5",
+        "description": "Opis 6",
+        "password": "haslo6",
+        "landlord_id": 3
+    }
+]

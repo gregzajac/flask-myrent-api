@@ -1,0 +1,32 @@
+[
+    {
+        "identifier": "landlord1",
+        "email": "landlord1@wp.pl",
+        "first_name": "Jan",
+        "last_name": "Kowalski",
+        "phone": "601-500-400",
+        "address": "Adres 1, ulica1, 1/5",
+        "description": "Opis landlord 1",
+        "password": "haslo1"
+    },
+    {
+        "identifier": "landlord2",
+        "email": "landlord2@wp.pl",
+        "first_name": "Andrzej",
+        "last_name": "Kowalski",
+        "phone": "602-500-400",
+        "address": "Adres 2, ulica2, 2/5",
+        "description": "Opis landlord 2",
+        "password": "haslo2"
+    },
+    {
+        "identifier": "landlord3",
+        "email": "landlord3@wp.pl",
+        "first_name": "Irena",
+        "last_name": "Kowalska",
+        "phone": "603-500-400",
+        "address": "Adres 3, ulica1, 3/5",
+        "description": "Opis landlord 3",
+        "password": "haslo3"
+    }
+]
