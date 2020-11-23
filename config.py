@@ -34,15 +34,11 @@ class TestingConfig(Config):
     UPLOAD_FOLDER = base_dir / 'tests' / 'uploads'
 
 
-class ProductionConfig(Config):
-    # DB_HOST = os.environ.get('DB_HOST')
-    # DB_USERNAME = os.environ.get('DB_USERNAME')
-    # DB_PASSWORD = os.environ.get('DB_PASSWORD')
-    # DB_NAME = os.environ.get('DB_NAME')
-    # SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}?charset=utf8mb4'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+class ProductionConfig(Config): 
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     UPLOAD_FOLDER = base_dir / 'uploads'
 
+#'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 
 config = {
     'development': DevelopmentConfig,
