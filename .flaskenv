@@ -1,2 +1,2 @@
-FLASK_APP=wsgi.py
-FLASK_ENV=production
+FLASK_APP=myrent.py
+FLASK_ENV=development
