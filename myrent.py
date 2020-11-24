@@ -2,7 +2,8 @@ from myrent_app import create_app
 
 app = create_app()
 
+key = app.config['SECRET_KEY']
 
 @app.route('/')
 def index():
-    return 'flask-myrent-api, prefiks=/api/v1, author: Grzegorz Zając'
+    return f'flask-myrent-api, prefiks=/api/v1, author: Grzegorz Zając {key}'
