@@ -42,6 +42,8 @@ class ProductionConfig(Config):
     DB_NAME = os.environ.get('DB_NAME')
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
     UPLOAD_FOLDER = base_dir / 'uploads'
+    FLASK_APP = 'wsgi.py'
+    FLASK_ENV = 'production'
 
 #'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 #postgresql+psycopg2

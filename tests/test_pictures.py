@@ -165,8 +165,7 @@ def test_delete_picture_landlord_token(client, sample_data):
     assert response.headers['Content-Type'] == 'application/json'
     assert response_data['success'] is True
     assert response_data['data'] == 'Picture with id 1 has been deleted'
-    filepath = 'C:\\python\\github_repos\\Python-examples\\flask-myrent-api\\tests\\uploads\\example.JPG'
-    assert not os.path.isfile(filepath)
+    assert not os.path.isfile(os.path.join(base_dir, 'uploads', 'example.JPG'))
 
 
 def test_delete_picture_other_landlord(client, sample_data):
