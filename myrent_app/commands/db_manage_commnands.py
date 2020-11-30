@@ -135,18 +135,18 @@ def remove_data_mysql():
 def remove_data_postgres():
     """Remove all data from the database and from AWS S3"""
     try:
-        db.session.execute('DELETE FROM pictures')
-        db.session.execute('ALTER SEQUENCE pictures_id_seq RESTART WITH 1')
-        db.session.execute('DELETE FROM settlements')
-        db.session.execute('ALTER SEQUENCE settlements_id_seq RESTART WITH 1')
-        db.session.execute('DELETE FROM agreements')
-        db.session.execute('ALTER SEQUENCE agreements_id_seq RESTART WITH 1')
-        db.session.execute('DELETE FROM flats')
-        db.session.execute('ALTER SEQUENCE flats_id_seq RESTART WITH 1')
-        db.session.execute('DELETE FROM tenants')
-        db.session.execute('ALTER SEQUENCE tenants_id_seq RESTART WITH 1')
-        db.session.execute('DELETE FROM landlords')
-        db.session.execute('ALTER SEQUENCE landlords_id_seq RESTART WITH 1')
+        db.session.execute('DELETE FROM pictures;')
+        db.session.execute('ALTER SEQUENCE pictures_id_seq RESTART WITH 1;')
+        db.session.execute('DELETE FROM settlements;')
+        db.session.execute('ALTER SEQUENCE settlements_id_seq RESTART WITH 1;')
+        db.session.execute('DELETE FROM agreements;')
+        db.session.execute('ALTER SEQUENCE agreements_id_seq RESTART WITH 1;')
+        db.session.execute('DELETE FROM flats;')
+        db.session.execute('ALTER SEQUENCE flats_id_seq RESTART WITH 1;')
+        db.session.execute('DELETE FROM tenants;')
+        db.session.execute('ALTER SEQUENCE tenants_id_seq RESTART WITH 1;')
+        db.session.execute('DELETE FROM landlords;')
+        db.session.execute('ALTER SEQUENCE landlords_id_seq RESTART WITH 1;')
 
         print('All data has been deleted from database')
 
