@@ -1,5 +1,6 @@
-import re
-import jwt
+import re, jwt, boto3, botocore
+from botocore.errorfactory import ClientError
+
 from flask import request, abort, current_app, url_for
 from flask_sqlalchemy import DefaultMeta, BaseQuery
 from functools import wraps
@@ -8,6 +9,7 @@ from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.sql.expression import BinaryExpression
 from werkzeug.exceptions import UnsupportedMediaType
 from werkzeug.security import generate_password_hash
+from werkzeug.datastructures import FileStorage
 
 
 COMPARISON_OPERATORS_RE = re.compile(r'(.*)\[(gte|lte|gt|lt)\]')
@@ -151,3 +153,84 @@ def generate_hashed_password(password: str) -> str:
 def allowed_picture(filename: str) -> bool:
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in current_app.config.get('ALLOWED_EXTENSIONS')    
+
+
+def upload_file_to_s3(file: FileStorage, 
+                      file_name: str,
+                      bucket_name: str, 
+                      aws_access_key_id: str,
+                      aws_secret_access_key: str,
+                      acl='public-read') -> str:
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key
+    )    
+
+    try:
+        s3.upload_fileobj(
+            file,
+            bucket_name,
+            file_name,
+            ExtraArgs={
+                'ACL': acl,
+                'ContentType': file.content_type
+            }
+        )
+    except Exception as e:
+        print('Exception upload_file_to_s3: ', e)
+        return e
+
+    file_url = f'http://{bucket_name}.s3.amazonaws.com/{file_name}' 
+    return file_url
+
+
+def delete_file_from_s3(bucket_name: str, 
+                        file_name: str, 
+                        aws_access_key_id: str,
+                        aws_secret_access_key: str) -> bool:
+    result = False
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key
+    )    
+
+    try:
+        s3.delete_object(Bucket= bucket_name, Key=file_name)
+        result = True
+    except Exception as e:
+        print('Exception upload_file_to_s3: ', e)
+        return e    
+
+    return result
+
+
+def delete_all_files_from_s3(bucket_name: str,
+                             aws_access_key_id: str,
+                             aws_secret_access_key: str) -> str:
+    result = 'start function delete_all_files_from_s3'  
+
+    try:
+        s3 = boto3.client('s3',
+                        aws_access_key_id=aws_access_key_id,
+                        aws_secret_access_key=aws_secret_access_key)
+
+        response = s3.list_objects_v2(Bucket=bucket_name)
+        if 'Contents' in response:
+            i = 0
+            for file in response['Contents']:
+                i += 1
+                # print('Deleting', file['Key'])
+                s3.delete_object(Bucket=bucket_name, Key=file['Key'])
+            result = f'All {i} files has been deleted from s3 bucket {bucket_name}'
+
+        else:
+            result = f'Bucket <{bucket_name}> is already empty'
+
+    except Exception as e:
+        result = f'Exception delete_all_files_from_s3: {e}'
+
+    return result

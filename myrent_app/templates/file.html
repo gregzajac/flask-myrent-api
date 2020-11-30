@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    <h1>Test uploading files</h1>
+
+    <div>
+        
+        <label for="identifier">Landlord Identifier</label>
+        <input id="landlordID" type="text" name="identifier">
+        <br></br>
+        <label for="password">Landlord Password</label>
+        <input id="landlordPWD" type="text" name="password">
+        <br></br>
+        <br></br>
+
+        <label for="picture">Upload Your File</label>
+        <br></br>
+        <input id="pic" type="file" name="picture">
+        <br></br>
+        <label for="id">Flat id</label>
+        <input id="landlordFlatId" type="text" name="id" placeholder="Must be linked to Landlord"> 
+        <br></br>
+        <label for="description">Picture description</label>
+        <input id="desc" type="text" name="description">
+        <br></br>
+        <br></br>
+
+        <button onclick="uploadPicture()"><b>Logging + Uploding</b></button>
+
+    </div><br>
+
+    <p id="result"></p>
+
+
+    <script type="text/javascript">
+
+        async function postJsonData(url = '', 
+                                data = {}, 
+                                headers = {'Content-Type': 'application/json'}) {
+            // Default options are marked with *
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: headers,
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                // 'Content-Type': 'application/json',
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+        async function postFormData(url = '', formData = {}, token = '') {
+            // Default options are marked with *
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: formData // body data type must match "Content-Type" header
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+
+        function uploadPicture(){
+            
+            const data_auth = {
+                "identifier": document.getElementById("landlordID").value,
+                "password": document.getElementById("landlordPWD").value
+            };
+            const landlordFlatID = document.getElementById("landlordFlatId").value;
+
+            document.getElementById("result").innerHTML = '<h3>API results:<br><h3>'
+            
+            postJsonData('/api/v1/landlords/login', data_auth)
+                .then(data => {
+                    
+                    document.getElementById("result").innerHTML += '<b>Logging HTTP</b>: ' + JSON.stringify(data) + '<br>';
+
+                    if (data.success === true){
+                        const formData = new FormData();
+                        const fileField = document.getElementById("pic");
+                        const descField = document.getElementById("desc");
+                        formData.append('description', descField.value);
+                        formData.append('picture', fileField.files[0]);
+                        const url = '/api/v1/flats/' + landlordFlatID + '/pictures';
+
+                        postFormData(url, formData, data.token)
+                            .then(data => {
+                                document.getElementById("result").innerHTML += '<b>Uploading HTTP</b>: ' + JSON.stringify(data) + '<br>';
+                                });
+                    }; 
+                });
+        };
+
+    </script>
+    
+</body>
+
+</html>

@@ -18,12 +18,14 @@ class Config:
     CORS_HEADERS = 'Content-Type'
     ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
     MAX_CONTENT_LENGTH = 2 * 1024 * 1024
-    UPLOAD_FOLDER = ''
+    S3_BUCKET = os.environ.get('S3_BUCKET')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    SAMPLES_FOLDER = os.path.join(base_dir, 'samples')
 
 
 class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-    UPLOAD_FOLDER = base_dir / 'uploads'
 
 
 class TestingConfig(Config):
@@ -31,7 +33,6 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_FILE_PATH}'
     DEBUG = True
     TESTING = True
-    UPLOAD_FOLDER = base_dir / 'tests' / 'uploads'
 
 
 class ProductionConfig(Config): 
@@ -41,7 +42,6 @@ class ProductionConfig(Config):
     DB_PORT = os.environ.get('DB_PORT')
     DB_NAME = os.environ.get('DB_NAME')
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
-    UPLOAD_FOLDER = base_dir / 'uploads'
 
 
 config = {

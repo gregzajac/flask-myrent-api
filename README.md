@@ -1,8 +1,8 @@
 # Renting flats REST API
 
-REST API for online renting flats. It supports landlords of flats and flats resources including authentication (JWT). It also provides managing tenants, agreements with connected to them settlements and pictures for flats. Working application can be found [here](https://flask-myrent-api.herokuapp.com/api/v1/)
+REST API for online renting flats. It supports landlords of flats and flats resources including authentication (JWT). It also provides managing tenants, agreements with connected to them settlements and pictures for flats. Working application can be found [here](https://flask-myrent-api.herokuapp.com/api/v1/).
 
-The documentation can be found in `myrent_app/templates/myrent_api_documentation.html` or [here](https://documenter.getpostman.com/view/13065363/TVewY42z)
+The documentation can be found in `myrent_app/templates/myrent_api_documentation.html` or [here](https://documenter.getpostman.com/view/13065363/TVewY42z).
 The schema of the database can be found [here](https://dbdiagram.io/embed/5f91f7463a78976d7b78d0b1)
 
 ## Setup

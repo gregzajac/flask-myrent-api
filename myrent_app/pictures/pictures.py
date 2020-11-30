@@ -1,18 +1,23 @@
 import os
 from flask import jsonify, abort, current_app, send_file, request, url_for, \
-                    render_template, redirect
+                  render_template, redirect
 from werkzeug.utils import secure_filename
 from pathlib import Path
 
 from myrent_app import db
 from myrent_app.pictures import pictures_bp
 from myrent_app.models import Picture, Flat, PictureSchema, picture_schema
-from myrent_app.utils import allowed_picture, token_landlord_required
+from myrent_app.utils import allowed_picture, token_landlord_required, \
+                             upload_file_to_s3, delete_file_from_s3
 
 
 @pictures_bp.route('/', methods=['GET'])
-def upload_test_file():
+def get_documentation():
     return render_template('myrent_api_documentation.html')
+
+@pictures_bp.route('/file', methods=['GET'])
+def upload_test_file():
+    return render_template('file.html')
 
 
 @pictures_bp.route('/pictures', methods=['GET'])
@@ -54,30 +59,38 @@ def add_picture(landlord_id: int, flat_id: int):
     if flat.landlord_id != landlord_id:
         abort(404, description=f'Flat with id {flat_id} not found')
 
-    file = request.files['picture']
+    file = request.files.get('picture') 
     description = request.form.get('description')
-
-    if file.filename == '':
+    
+    if file is None:
         abort(422, description=f'Picture is not attached')
 
-    if not allowed_picture(file.filename):
+    file_name = f'flat{flat_id}_{secure_filename(file.filename)}'
+
+    if not allowed_picture(file_name):
         extensions = [e for e in current_app.config.get('ALLOWED_EXTENSIONS')]
         abort(422, description=f'Not allowed picture extension ({extensions})')
 
-    picture_with_this_filename = Picture.query.filter(Picture.name == file.filename).first()
+    picture_with_this_filename = Picture.query.filter(Picture.name == file_name).first()
     if picture_with_this_filename is not None:
         abort(409, description=f'Picture with name {file.filename} already exists')
 
-    filename = secure_filename(file.filename)
-    target = os.path.join(current_app.config.get('UPLOAD_FOLDER'), filename)
+    file_url = upload_file_to_s3(file,
+                                file_name,
+                                current_app.config.get('S3_BUCKET'),
+                                current_app.config.get('AWS_ACCESS_KEY_ID'),
+                                current_app.config.get('AWS_SECRET_ACCESS_KEY'))
 
-    picture = Picture(name=filename, path=str(target), flat_id=flat_id)
-    if description is not None:
+    picture = Picture(name=file_name, path=str(file_url), flat_id=flat_id)
+    if description is not None and description != '':
         picture.description = description
 
     db.session.add(picture)
     db.session.commit()
-    file.save(target)
+
+    print('file: ', file)
+    print('file_name: ', file_name)
+    print('description: ', (description))
 
     return jsonify({
         'success': True,
@@ -94,11 +107,15 @@ def delete_picture(landlord_id: int, picture_id: int):
     if picture.flat.landlord_id != landlord_id:
         abort(404, description=f'Picture with id {picture_id} not found')
 
+    if not delete_file_from_s3(current_app.config.get('S3_BUCKET'),
+                               picture.name,
+                               current_app.config.get('AWS_ACCESS_KEY_ID'),
+                               current_app.config.get('AWS_SECRET_ACCESS_KEY')):
+
+        abort(404, description=f'Picture with id {picture_id} not found in AWS S3')
+
     db.session.delete(picture)
     db.session.commit()
-
-    if os.path.isfile(picture.path):
-        os.remove(picture.path)
 
     return jsonify({
         'success': True,
