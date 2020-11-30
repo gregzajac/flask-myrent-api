@@ -119,6 +119,7 @@ def remove_data_mysql():
         db.session.execute('ALTER TABLE tenants AUTO_INCREMENT=1')
         db.session.execute('DELETE FROM landlords')
         db.session.execute('ALTER TABLE landlords AUTO_INCREMENT=1')
+        db.session.commit()
 
         print('All data has been deleted from database') 
 
@@ -147,6 +148,7 @@ def remove_data_postgres():
         db.session.execute('ALTER SEQUENCE tenants_id_seq RESTART WITH 1;')
         db.session.execute('DELETE FROM landlords;')
         db.session.execute('ALTER SEQUENCE landlords_id_seq RESTART WITH 1;')
+        db.session.commit()
 
         print('All data has been deleted from database')
 
