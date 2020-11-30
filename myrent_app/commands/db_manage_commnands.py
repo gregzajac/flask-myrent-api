@@ -79,7 +79,7 @@ def add_data():
 
             for pic in pictures_list:
                 flat_id += 1
-                file_name = f'Flat{flat_id}_{os.path.split(pic)[1]}'
+                file_name = f'flat{flat_id}_{os.path.split(pic)[1]}'
                 file_type = mimetypes.guess_type(pic)[0]
 
                 s3.upload_file(pic, 

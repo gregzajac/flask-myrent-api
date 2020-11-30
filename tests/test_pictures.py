@@ -66,11 +66,9 @@ def test_add_picture_ok(client, flat, landlord_token, file_example):
 
     assert response.status_code == 201
     assert response_data['success'] is True
-    assert response_data['data']['name'] == file_example['name']
+    assert response_data['data']['name'] == f'flat1_{file_example["name"]}'
     assert response_data['data']['path'] == file_example['path']
     assert response_data['data']['description'] == file_example['description']
-    assert os.path.isfile(file_example['path'])
-    os.remove(file_example['path'])
 
 
 def test_get_all_pictures_no_records(client):
@@ -90,7 +88,7 @@ def test_get_all_pictures_sample_data(client, sample_data):
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'application/json'
     assert response_data['success'] is True
-    assert len(response_data['data']) == 3
+    assert len(response_data['data']) == 2
 
 
 def test_get_all_flat_pictures(client, sample_data):
@@ -114,8 +112,8 @@ def test_get_one_picture(client, sample_data):
     assert response_data['success'] is True
     assert len(response_data['data']) == 7
     assert response_data['data']['id'] == 1
-    assert response_data['data']['name'] == 'example.JPG'
-    assert response_data['data']['description'] == 'Opis dla fotki example.JPG'
+    assert response_data['data']['name'] == 'flat1_example.JPG'
+    assert response_data['data']['description'] == 'Description for flat1_example.JPG'
     assert response_data['data']['path'] == os.path.join(base_dir, 'uploads', 'example.JPG')
 
 
@@ -165,7 +163,6 @@ def test_delete_picture_landlord_token(client, sample_data):
     assert response.headers['Content-Type'] == 'application/json'
     assert response_data['success'] is True
     assert response_data['data'] == 'Picture with id 1 has been deleted'
-    assert not os.path.isfile(os.path.join(base_dir, 'uploads', 'example.JPG'))
 
 
 def test_delete_picture_other_landlord(client, sample_data):

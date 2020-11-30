@@ -92,6 +92,8 @@
                     document.getElementById("result").innerHTML += '<b>Logging HTTP</b>: ' + JSON.stringify(data) + '<br>';
 
                     if (data.success === true){
+                        document.getElementById("result").innerHTML += 'Picture uploading processing...<br>';
+
                         const formData = new FormData();
                         const fileField = document.getElementById("pic");
                         const descField = document.getElementById("desc");

@@ -36,11 +36,14 @@ flask run
 Import / delete example data from 
 `myrent_app/samples`
 ```buildoutcfg
-# import
+# import (to database and AWS S3)
 flask db-manage add-data
 
-# remove
-flask db-manage remove-data
+# remove with MySQL database
+flask db-manage remove-data-mysql
+
+# remove with PostgreSQL database
+flask db-manage remove-data-postgres
 ```
 
 ## Tests
@@ -60,6 +63,6 @@ python -m pytest tests/
 - Marshmallow 3.8.0
 - JWT 1.7.1
 - Cors 3.0.9
-- MySQL
+- MySQL (dev) / PostgreSQL (prod)
 - Heroku
 - Postman

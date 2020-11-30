@@ -184,7 +184,7 @@ def file_example():
     file_example = {
         'name': 'example.JPG',
         'source': os.path.join(base_dir, 'samples', 'example.JPG'),
-        'path': os.path.join(base_dir, 'tests', 'uploads', 'example.JPG'),
+        'path': 'http://flask-myrent-api.s3.amazonaws.com/flat1_example.JPG',
         'description': 'picture description'
     }
     return file_example
