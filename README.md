@@ -9,6 +9,7 @@ The schema of the database can be found [here](https://dbdiagram.io/embed/5f91f7
 
 - Clone repository
 - Create database and user
+- Create AWS S3 bucket
 - Rename .env.example to `.env` and set your values 
 ```buildoutcfg
 # MySQL SQLALCHEMY_DATABASE_URI MySQL template
